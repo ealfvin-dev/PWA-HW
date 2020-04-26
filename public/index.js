@@ -1,6 +1,37 @@
 let transactions = [];
 let myChart;
 
+//insert stored transactions if the user is online, clear store
+if(navigator.onLine) {
+  const request = indexedDB.open("transactions", 1);
+    request.onsuccess = () => {
+      const db = request.result;
+
+      const transaction = db.transaction(["pending"], "readwrite");
+      const pendingStore = transaction.objectStore("pending");
+
+      const allPending = pendingStore.getAll();
+
+      allPending.onsuccess = () => {
+        if(allPending.result.length > 0) {
+          fetch("/api/transaction/bulk", {
+            method: "POST",
+            body: JSON.stringify(allPending.result),
+            headers: {
+              Accept: "application/json, text/plain, */*",
+              "Content-Type": "application/json"
+            }
+          })
+          .then(function() {
+            const transaction = db.transaction(["pending"], "readwrite");
+            const pendingStore = transaction.objectStore("pending");
+            pendingStore.clear();
+          });
+        }
+      }
+    }
+}
+
 fetch("/api/transaction")
   .then(response => {
     return response.json();
