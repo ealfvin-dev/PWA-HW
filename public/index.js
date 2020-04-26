@@ -152,7 +152,7 @@ function saveRecord(pendingTransaction) {
       const transaction = db.transaction(["pending"], "readwrite");
       const pendingStore = transaction.objectStore("pending");
 
-      pendingStore.add(pendingTransaction, "transaction");
+      pendingStore.add(pendingTransaction);
     }
 }
 
