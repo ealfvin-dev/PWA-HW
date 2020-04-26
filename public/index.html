@@ -14,8 +14,21 @@
   <title>Budget Tracker</title>
 </head>
 
-<!--Service Worker registration-->
 <script>
+  //Open up an indexedDB
+  const request = indexedDB.open("transactions", 1);
+
+  // Create an object store
+  request.onupgradeneeded = ({ target }) => {
+    const db = target.result;
+    const objectStore = db.createObjectStore("pending");
+  };
+  
+  request.onsuccess = event => {
+    console.log(request.result);
+  };
+
+  //Service Worker registration
   if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
       navigator.serviceWorker.register("./service-worker.js")

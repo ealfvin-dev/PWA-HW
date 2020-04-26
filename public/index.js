@@ -144,6 +144,18 @@ function sendTransaction(isAdding) {
   });
 }
 
+function saveRecord(pendingTransaction) {
+  const request = indexedDB.open("transactions", 1);
+    request.onsuccess = () => {
+      const db = request.result;
+
+      const transaction = db.transaction(["pending"], "readwrite");
+      const pendingStore = transaction.objectStore("pending");
+
+      pendingStore.add(pendingTransaction, "transaction");
+    }
+}
+
 document.querySelector("#add-btn").onclick = function() {
   sendTransaction(true);
 };
