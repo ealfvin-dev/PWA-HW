@@ -26,6 +26,8 @@ if(navigator.onLine) {
             const transaction = db.transaction(["pending"], "readwrite");
             const pendingStore = transaction.objectStore("pending");
             pendingStore.clear();
+
+            window.location.href = "/";
           });
         }
       }
